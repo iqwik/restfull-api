@@ -1,0 +1,55 @@
+<?php
+
+error_reporting(E_ALL|E_STRICT);
+date_default_timezone_set('Europe/Moscow');
+
+$config = [
+    'autoload_dirs' => ['lib','lib/api','lib/common','lib/util'],
+    'db' => [
+        'username' => 'root',
+        'password' => '123456',
+        'name' => 'test',
+        'host' => 'localhost',
+        'sortTables' => [ // таблицы для отличной сортировки от дефолтной {название таблицы} => {запрос}
+            'brif' => 'ORDER BY date_created DESC',
+            'project' => 'ORDER BY sort',
+            'kp' => 'ORDER BY date_created DESC'
+        ],
+        'customSelect' => ['member','kp'], // таблицы для более сложного select, например: не по id
+        'privateTables' => ['user','migration','img_attachment','brif'], // закрываем доступ к таблицам для неавторизованных
+        'acceptPostTables' => ['brif'], // разрешаем insert в таблицу для неавторизованных пользователей методом POST
+    ],
+    'domain' => 'http://test.loc',
+    'allowed_methods' => [ 'GET','POST','PUT','DELETE','OPTIONS' ], // разрешенные методы
+    'default_classname' => 'Model', // класс по-умолчанию
+    'ctype_json' => true, // установка заголовка "Content-type: ...", если true = "application/json", иначе "text/html"
+    'show_code_in_response_body' => true // отображать "status" и "message" в body ответа для GET
+];
+
+$config['allowed_domains'] = [
+//  'http://localhost:8080',
+    '*',
+];
+
+$config['root'] = __DIR__;
+$config['api_dir'] = $config['root'].'/lib/api';
+
+$config['jwt'] = [ // переменные, используемые для JWT
+    'key' => "your_secret_key",
+    'iss' => $config['domain'],
+    'aud' => $config['domain'],
+    'iat' => 1356999524,
+    'nbf' => 1357000000,
+];
+
+// свои настройки smtp
+$config['smtp'] = [
+    'charset' => 'UTF-8',
+    'from' => ['email' => 'example@mail.ru', 'name' => 'example'],
+    'admin_email' => ['email' => 'example@mail.ru', 'name' => 'example'],
+    'host' => 'smtp.mail.ru',
+    'username' => 'example@mail.ru',
+    'password' => '123456',
+    'port' => '465',
+    'secure' => 'ssl',
+];
